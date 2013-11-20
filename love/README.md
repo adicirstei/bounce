@@ -1,0 +1,1 @@
+(https://github.com/Kadoba/Advanced-Tiled-Loader/wiki)[]https://github.com/Kadoba/Advanced-Tiled-Loader/wiki
