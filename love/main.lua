@@ -47,7 +47,7 @@ function love.mousepressed( x, y, button )
     ball.speedY = -5
   else
     print(game.map("Bricks")(1,1), game.map("Bricks")(1, 0))
-    game.map("Bricks"):set(1,1,tiles['empty'])
+    game.map("Bricks"):set(1,1,nil)
     game.map:forceRedraw ()
     print(game.map("Bricks")(1,1))
   end
