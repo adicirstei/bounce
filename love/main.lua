@@ -1,25 +1,62 @@
 io.stdout:setvbuf("no")
 
-local map
+
 local tx, ty = 0, 0
 
 -- Get Advanced Tiled Loader
 local ATL = require("modules/AdvTiledLoader") 
+local pad = {
+  x = 2,
+  y = 720-16,
+  w = 64, 
+  h = 16
+}
+local ball = {
+  r = 5
+}
+
+ball.x=pad.x
+
+ball.y=pad.y-ball.r
+
 local game = {
   balls = 3,
-  pad = {
-    x = 2,
-    y = 300,
-    w = 200
-  }
+  roundStarted = false
 }
+function love.mousepressed( x, y, button )
+  if not game.roundStarted then 
+    game.roundStarted = true
+    ball.speedX = 3
+    ball.speedY = -5
+  else
+    game.map("Bricks"):set(3,3, nil)
+    game.map:updateTiles ()
+  end
+
+end
+
+
 function game:update(dt)
-  if love.keyboard.isDown("left") then self.pad.x = self.pad.x + 250*dt end
-  if love.keyboard.isDown("right") then self.pad.x = self.pad.x - 250*dt end 
+
+  pad.x = love.mouse.getX()
+
+  if not game.roundStarted then 
+    ball.x = pad.x 
+  else
+    ball.x = ball.x + ball.speedX
+    ball.y = ball.y + ball.speedY
+  end
+
+
+  if love.keyboard.isDown("left") then pad.x = pad.x - 1000*dt end
+  if love.keyboard.isDown("right") then pad.x = pad.x + 1000*dt end 
+
+
 end
 
 function game:draw()
   self.map:draw()
+  self.drawBall()
   self.drawPad()
   self.drawHUD()
 end
@@ -28,6 +65,13 @@ function game:drawHUD()
 end
   
 function game:drawPad()
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.rectangle("fill", pad.x - pad.w, pad.y, pad.w*2, pad.h)
+end
+
+function game:drawBall()
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.circle("fill", ball.x, ball.y, ball.r, 16)
 end
 
 
@@ -39,7 +83,7 @@ function love.load()
 
     -- Use the loader to load the map
     game.map = ATL.Loader.load("level1.tmx") 
-
+    game.map("Bricks"):set(0,0,game.map("Bricks")(1, 0))
 end
 
 function love.update(dt)
@@ -53,3 +97,4 @@ function love.draw()
     -- game.map:autoDrawRange( math.floor(tx), math.floor(ty), 1, pad)    
     game:draw()
 end
+
