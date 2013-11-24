@@ -24,6 +24,11 @@
     <property name="value" value="5"/>
    </properties>
   </tile>
+  <tile id="24">
+   <properties>
+    <property name="type" value="empty"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Bricks" width="20" height="20">
   <data encoding="csv">

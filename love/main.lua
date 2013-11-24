@@ -2,7 +2,7 @@ io.stdout:setvbuf("no")
 
 
 local tx, ty = 0, 0
-
+local tiles = {}
 -- Get Advanced Tiled Loader
 local ATL = require("modules/AdvTiledLoader") 
 local pad = {
@@ -23,16 +23,34 @@ local game = {
   balls = 3,
   roundStarted = false
 }
+
+
+function love.load()
+    --  Set maps/ as the base directory for map loading
+    ATL.Loader.path = 'maps/'
+
+    -- Use the loader to load the map
+    game.map = ATL.Loader.load("level1.tmx") 
+    game.map("Bricks"):set(0,0,game.map("Bricks")(1, 0))
+
+    for _, tile in pairs(game.map.tiles) do
+      if tile.properties.type then
+        tiles[tile.properties.type] = tile
+      end
+    end
+end
+
 function love.mousepressed( x, y, button )
   if not game.roundStarted then 
     game.roundStarted = true
     ball.speedX = 3
     ball.speedY = -5
   else
-    game.map("Bricks"):set(3,3, nil)
-    game.map:updateTiles ()
+    print(game.map("Bricks")(1,1), game.map("Bricks")(1, 0))
+    game.map("Bricks"):set(1,1,tiles['empty'])
+    game.map:forceRedraw ()
+    print(game.map("Bricks")(1,1))
   end
-
 end
 
 
@@ -75,16 +93,7 @@ function game:drawBall()
 end
 
 
-function love.load()
 
-
-    --  Set maps/ as the base directory for map loading
-    ATL.Loader.path = 'maps/'
-
-    -- Use the loader to load the map
-    game.map = ATL.Loader.load("level1.tmx") 
-    game.map("Bricks"):set(0,0,game.map("Bricks")(1, 0))
-end
 
 function love.update(dt)
   game:update(dt)
