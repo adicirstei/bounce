@@ -15,15 +15,26 @@ local ball = {
   r = 6
 }
 
-ball.x=pad.x
+ball.pos = math.random(-pad.w, pad.w)
 
 ball.y=pad.y-ball.r
 
 local game = {
   balls = 3,
-  roundStarted = false
+  roundStarted = false,
+  timer = 0
 }
 
+function game.startRound()
+  
+  
+  local s = 100;
+
+  ball.speedX = 0
+  ball.speedY = -100
+  
+  game.roundStarted = true
+end
 
 function love.load()
     --  Set maps/ as the base directory for map loading
@@ -48,9 +59,7 @@ end
 
 function love.mousepressed( x, y, button )
   if not game.roundStarted then 
-    game.roundStarted = true
-    ball.speedX = 100
-    ball.speedY = -250
+    game.startRound()
   else
     print(game.map("Bricks")(1,1), game.map("Bricks")(1, 0))
     game.map("Bricks"):set(1,1,nil)
@@ -65,7 +74,7 @@ function game:update(dt)
   pad.x = love.mouse.getX()
 
   if not game.roundStarted then 
-    ball.x = pad.x 
+    ball.x = pad.x + ball.pos
   else
     ball.x = ball.x + ball.speedX*dt
     ball.y = ball.y + ball.speedY*dt
@@ -86,6 +95,7 @@ function game:draw()
 end
   
 function game:drawHUD()
+  love.graphics.print("FPS:"..love.timer.getFPS().." pos: "..ball.pos.." padw: "..pad.w, 0,0)
 end
   
 function game:drawPad()
