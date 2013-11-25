@@ -100,7 +100,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -142,7 +142,7 @@
        sodipodi:rx="7.0710678"
        sodipodi:ry="6.5659914"
        d="m 221.22341,116.45585 a 7.0710678,6.5659914 0 1 1 -14.14213,0 7.0710678,6.5659914 0 1 1 14.14213,0 z"
-       transform="matrix(0.56568543,0,0,0.6091997,89.938416,48.076972)"
+       transform="matrix(0.84852814,0,0,0.91379955,31.366987,10.604538)"
        inkscape:export-filename="D:\proiecte\bounce\love\solid-ball.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
