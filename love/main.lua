@@ -43,8 +43,8 @@ end
 function love.mousepressed( x, y, button )
   if not game.roundStarted then 
     game.roundStarted = true
-    ball.speedX = 3
-    ball.speedY = -5
+    ball.speedX = 100
+    ball.speedY = -250
   else
     print(game.map("Bricks")(1,1), game.map("Bricks")(1, 0))
     game.map("Bricks"):set(1,1,nil)
@@ -61,8 +61,8 @@ function game:update(dt)
   if not game.roundStarted then 
     ball.x = pad.x 
   else
-    ball.x = ball.x + ball.speedX
-    ball.y = ball.y + ball.speedY
+    ball.x = ball.x + ball.speedX*dt
+    ball.y = ball.y + ball.speedY*dt
   end
 
 
