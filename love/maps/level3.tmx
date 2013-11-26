@@ -19,7 +19,7 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="20">
+ <layer name="Bricks" width="20" height="20">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,
