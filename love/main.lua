@@ -16,10 +16,6 @@ local ball = {
   a = 1
 }
 
-ball.pos = math.random(-pad.w, pad.w)
-
-ball.y=pad.y-ball.r
-
 game = {
   balls = 3,
   roundStarted = false,
@@ -27,20 +23,29 @@ game = {
 }
 function game.changeState()
   if state == "splash" then
+  
+    -- the ball is glued to the pad
     state = "prelaunch"
+    ball.pos = math.random(-pad.w, pad.w)
+    ball.y=pad.y-ball.r
+  elseif state == "prelaunch" then
+    state = "play"
   end
 end
 
+function getAlphaFromPos(p)
+  return math.pi/2 - p*math.pi/pad.w/3
+end
 
 function game.startRound()
+  local a, s = getAlphaFromPos(ball.pos), 150
   
-  
-  local s = 100;
-
-  ball.speedX = 50
-  ball.speedY = -100
+  print (a, s)
+  ball.speedX = s*math.cos(a)
+  ball.speedY = s*math.sin(a)
   
   game.roundStarted = true
+  game.changeState()
 end
 
 function love.load()
@@ -48,7 +53,7 @@ function love.load()
     ATL.Loader.path = 'maps/'
 
     -- Use the loader to load the map
-    game.map = ATL.Loader.load("level.tmx") 
+    game.map = ATL.Loader.load("level1.tmx") 
     game.map("Bricks"):set(0,0,game.map("Bricks")(1, 0))
     
     pad.left = love.graphics.newImage("pad-left.png")
@@ -86,7 +91,16 @@ function computeCollision()
   if (ball.x > pad.x-pad.w and ball.x<pad.x+pad.w and ball.y+ball.r > pad.y) or (ball.y-ball.r<0) then
     -- new speed based on the place it hits the pad
     
-    ball.speedY = -ball.speedY
+    local a, s = getAlphaFromPos(ball.x-pad.x), math.sqrt(ball.speedX^2+ball.speedY^2)
+  
+    print (a, s)
+    ball.speedX = s*math.cos(a)
+    ball.speedY = -s*math.sin(a)
+    
+    
+    
+    
+    -- ball.speedY = -ball.speedY
   end
   
   if ball.x-ball.r<0 or ball.x+ball.r>love.graphics.getWidth() then
