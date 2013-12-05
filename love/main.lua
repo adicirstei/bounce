@@ -1,5 +1,7 @@
 io.stdout:setvbuf("no")
 require "splash"
+require "ballpart"
+
 
 local tx, ty = 0, 0
 local tiles = {}
@@ -11,9 +13,9 @@ local pad = {
   w = 64, 
   h = 16
 }
-local ball = {
+ball = {
   r = 6,
-  a = 1
+  a = 10
 }
 
 game = {
@@ -43,7 +45,7 @@ function game.startRound()
   print (a, s)
   ball.speedX = s*math.cos(a)
   ball.speedY = s*math.sin(a)
-  
+  ballpart.system:start()
   game.roundStarted = true
   game.changeState()
 end
@@ -68,6 +70,8 @@ function love.load()
       end
     end
     splash.load()
+    
+    ballpart.load()
 end
 
 function love.mousepressed( x, y, button )
@@ -97,14 +101,12 @@ function computeCollision()
     ball.speedX = s*math.cos(a)
     ball.speedY = -s*math.sin(a)
     
-    
-    
-    
     -- ball.speedY = -ball.speedY
   end
   
   if ball.x-ball.r<0 or ball.x+ball.r>love.graphics.getWidth() then
     ball.speedX = -ball.speedX
+    
   end
   
   
@@ -146,6 +148,8 @@ function game:update(dt)
     else
       ball.speedY = ball.speedY + ball.a*dt
     end
+    
+    ballpart.update(dt)
     computeCollision()
     ball.x = ball.x + ball.speedX*dt
     ball.y = ball.y + ball.speedY*dt
@@ -160,6 +164,7 @@ end
 
 function game:draw()
   self.map:draw()
+  ballpart.draw()
   self.drawBall()
   self.drawPad()
   self.drawHUD()
