@@ -94,42 +94,75 @@ function computeCollision()
   -- check the margins and pad first
   if (ball.x > pad.x-pad.w and ball.x<pad.x+pad.w and ball.y+ball.r > pad.y) or (ball.y-ball.r<0) then
     -- new speed based on the place it hits the pad
-    
     local a, s = getAlphaFromPos(ball.x-pad.x), math.sqrt(ball.speedX^2+ball.speedY^2)
   
     print (a, s)
     ball.speedX = s*math.cos(a)
     ball.speedY = -s*math.sin(a)
-    
-    -- ball.speedY = -ball.speedY
   end
   
+  -- margin collision
   if ball.x-ball.r<0 or ball.x+ball.r>love.graphics.getWidth() then
     ball.speedX = -ball.speedX
-    
   end
-  
-  
+  local brick = {}
+  -- brick collision
   for x, y, tile in game.map("Bricks"):iterate() do
     -- brick in pixels
     x1 = x*tw
     y1 = y*th
-    
     x2 = (x+1)*tw - 1
-    y2 = (y+1)*th - 1
-    
-    -- lower edge
-    if (ball.y < y2+ ball.r) and (ball.x > x1-ball.r) and ball.x < x2+ball.r then
-      game.map("Bricks"):set(x, y, nil)
-      game.map:forceRedraw ()
-      ball.speedY = -ball.speedY
-      
+    y2 = (y+1)*th - 1    
+    -- check if the tile is colidable on lower edge
+    if game.map("Bricks"):get(x, y+1) == nil then
+      if (ball.y < y2+ ball.r) and (ball.x > x1-ball.r) and ball.x < x2+ball.r then
+        ball.speedY = -ball.speedY
+        brick.x, brick.y, brick.tile = x, y, tile
+        ball.y = y2+ball.r
+        collideWithBrick(brick)
+      end
     end
-    --print(x, y, tile.properties.type)
+    -- check if the tile is colidable on upper edge
+    if y > 0 and game.map("Bricks"):get(x, y-1) == nil then
+      if (ball.y > y1 - ball.r) and (ball.x > x1-ball.r) and ball.x < x2+ball.r then
+        ball.speedY = -ball.speedY
+        brick.x, brick.y, brick.tile = x, y, tile
+        ball.y = y1-ball.r
+        collideWithBrick(brick)
+      end
+    end
+
+    -- check if the tile is colidable on left edge
+   
+    if x > 0 and game.map("Bricks"):get(x-1, y) == nil then
+      if (ball.x > x1 - ball.r) and (ball.x < x2) and (ball.y > y1-ball.r) and ball.y < y2+ball.r then
+        ball.speedX = -ball.speedX
+        brick.x, brick.y, brick.tile = x, y, tile
+        ball.x = x1-ball.r
+        collideWithBrick(brick)
+      end
+    end
+
+    -- check if the tile is colidable on right edge
+    if game.map("Bricks"):get(x+1, y) == nil then
+      if (ball.x < x2 + ball.r) and (ball.x > x1) and (ball.y > y1-ball.r) and ball.y < y2+ball.r then
+        ball.speedX = -ball.speedX
+        brick.x, brick.y, brick.tile = x, y, tile
+        ball.x = x2+ball.r
+        collideWithBrick(brick)
+      end
+    end
+
+
   end
   
 end
 
+function collideWithBrick(b)
+  
+  game.map("Bricks"):set(b.x, b.y, nil)
+  game.map:forceRedraw ()
+end
 
 function game:update(dt)
 
